@@ -1,0 +1,51 @@
+{
+  "name": "bworks",
+  "version": "1.0.0",
+  "description": "Kanban Board",
+  "main": "index.js",
+  "scripts": {
+    "run:auth": "nodemon ./services/auth/server.js",
+    "run:board": "nodemon ./services/board/server.js",
+    "run:web": "nodemon ./services/web/server.js",
+    "start": "concurrently \"npm run run:auth\" \"npm run run:board\" \"npm run run:web\"",
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DennisOnder/bworks.git"
+  },
+  "keywords": [
+    "Node",
+    "Express",
+    "MongoDB",
+    "Docker",
+    "Microservices"
+  ],
+  "author": "Dennis Onder",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DennisOnder/bworks/issues"
+  },
+  "homepage": "https://github.com/DennisOnder/bworks#readme",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "concurrently": "^4.1.0",
+    "cors": "^2.8.5",
+    "eslint": "^5.16.0",
+    "mocha": "^6.1.4",
+    "nodemon": "^1.19.0",
+    "npm-run-all": "^4.1.5"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "bcrypt": "^3.0.6",
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.0.0",
+    "express": "^4.16.4",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.5.5",
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0",
+    "validator": "^10.11.0"
+  }
+}
