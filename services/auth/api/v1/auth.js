@@ -94,7 +94,7 @@ router.delete(
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
     User.findByIdAndDelete(req.user.id)
-      .then(user => {
+      .then(() => {
         return toolkit.handler(res, 200, {
           deleted: true,
           timestamp: Date.now()
