@@ -22,5 +22,5 @@ app.use("/auth", routes);
 // Server init
 app.listen(config.AUTH_SERVER_PORT, err => {
   if (err) process.exit(1);
-  console.log(`Auth service running on port ${config.AUTH_SERVER_PORT}...`);
+  console.log(`Auth service running on port: ${config.AUTH_SERVER_PORT}`);
 });

@@ -22,5 +22,5 @@ app.use("/board", routes);
 // Server init
 app.listen(config.BOARD_SERVER_PORT, err => {
   if (err) process.exit(1);
-  console.log(`Board service running on port ${config.BOARD_SERVER_PORT}...`);
+  console.log(`Board service running on port: ${config.BOARD_SERVER_PORT}`);
 });

@@ -14,5 +14,5 @@ require("../../config/passport");
 // Server init
 app.listen(config.WEB_SERVER_PORT, err => {
   if (err) process.exit(1);
-  console.log(`Web Service running on port ${config.WEB_SERVER_PORT}...`);
+  console.log(`Web Service running on port: ${config.WEB_SERVER_PORT}`);
 });
