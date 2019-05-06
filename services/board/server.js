@@ -4,6 +4,7 @@ const config = require("../../config/config");
 const cors = require("cors");
 const database = require("../../config/database");
 const passport = require("passport");
+const routes = require(`./api/${config.API_VERSION}/board`);
 
 // Apply middleware
 app.use(cors());
@@ -14,6 +15,9 @@ require("../../config/passport");
 
 // Database connection
 database.connect(config.BOARD_DB_URI);
+
+// Router init
+app.use("/board", routes);
 
 // Server init
 app.listen(config.BOARD_SERVER_PORT, err => {

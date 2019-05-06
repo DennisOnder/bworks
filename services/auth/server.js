@@ -4,7 +4,7 @@ const config = require("../../config/config");
 const cors = require("cors");
 const database = require("../../config/database");
 const passport = require("passport");
-const routes = require("./api/v1/auth");
+const routes = require(`./api/${config.API_VERSION}/auth`);
 
 // Apply middleware
 app.use(cors());

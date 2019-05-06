@@ -2,6 +2,7 @@
 const chai = require("chai");
 const config = require("../config/config");
 const apiCaller = require("./apiCaller");
+const getToken = require("./getToken");
 
 // Testing account
 const testUser = {
@@ -12,6 +13,7 @@ const testUser = {
   confirmPassword: "test1234"
 };
 
+// Edited account
 const editedUser = {
   firstName: "New",
   lastName: "Test",
@@ -63,18 +65,13 @@ describe("Auth Service", () => {
   });
   describe("Edit", () => {
     it("should return the new user as an object", async () => {
-      const user = await apiCaller(
-        "post",
-        config.AUTH_SERVER_PORT,
-        "/auth/login",
-        testUser
-      );
+      const token = await getToken(testUser);
       const response = await apiCaller(
         "put",
         config.AUTH_SERVER_PORT,
         "/auth/edit",
         editedUser,
-        user.data.token
+        token
       );
       chai.expect(response.status).to.eq(200);
       chai.expect(response.data).to.be.an("object");
@@ -96,18 +93,13 @@ describe("Auth Service", () => {
   });
   describe("Current", () => {
     it("should return the data for the current user", async () => {
-      const user = await apiCaller(
-        "post",
-        config.AUTH_SERVER_PORT,
-        "/auth/login",
-        editedUser
-      );
+      const token = await getToken(editedUser);
       const response = await apiCaller(
         "get",
         config.AUTH_SERVER_PORT,
         "/auth/current",
         null,
-        user.data.token
+        token
       );
       chai.expect(response.status).to.eq(200);
       chai.expect(response.data).to.be.an("object");
@@ -127,18 +119,13 @@ describe("Auth Service", () => {
   });
   describe("Delete", () => {
     it("should return an object with a timestamp and the deleted key", async () => {
-      const user = await apiCaller(
-        "post",
-        config.AUTH_SERVER_PORT,
-        "/auth/login",
-        editedUser
-      );
+      const token = await getToken(editedUser);
       const response = await apiCaller(
         "delete",
         config.AUTH_SERVER_PORT,
         "/auth/delete",
         editedUser,
-        user.data.token
+        token
       );
       chai.expect(response.status).to.eq(200);
       chai.expect(response.data).to.be.an("object");

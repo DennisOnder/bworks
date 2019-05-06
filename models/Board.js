@@ -1,22 +1,34 @@
 const mongoose = require("mongoose");
 
 const boardSchema = new mongoose.Schema({
+  owner: {
+    type: String,
+    required: true
+  },
   name: {
     type: String,
     required: true
   },
-  tasks: [
+  lists: [
     {
-      taskName: {
+      listName: {
         type: String,
         required: true
       },
-      taskBody: {
-        type: String,
-        required: true
-      }
+      tasks: [
+        {
+          taskBody: {
+            type: String,
+            required: true
+          }
+        }
+      ]
     }
-  ]
+  ],
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
 });
 
 const Board = mongoose.model("board", boardSchema);

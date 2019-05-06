@@ -38,5 +38,16 @@ module.exports = {
     } else {
       return false;
     }
+  },
+  board: data => {
+    let error = {};
+    if (validator.isEmpty(data.name)) {
+      error.boardNameEmpty = "A board name is required.";
+    }
+    if (Object.keys(error).length > 0) {
+      return error;
+    } else {
+      return false;
+    }
   }
 };
