@@ -1,7 +1,15 @@
 /* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
 const chai = require("chai");
 const config = require("../config/config");
 const apiCaller = require("./apiCaller");
+const getToken = require("./getToken");
+
+// Testing account
+const testUser = {
+  email: "test@gmail.com",
+  password: "test1234",
+};
 
 // Testing board
 const testBoard = {
@@ -15,9 +23,11 @@ const editedTestBoard = {
 
 describe("Board Service", () => {
   describe("Create", () => {
-    it("should return the created board as an object", async () => {
-      //
-    });
+    // it("should return the created board as an object", async () => {
+    //   const token = await getToken(testUser);
+    //   const response = await apiCaller('post', config.BOARD_SERVER_PORT, '/board/create', testBoard, token);
+    //   chai.expect(response.data).to.eq(200);
+    // });
   });
   describe("Get", () => {
     it("should return the board as an object", async () => {

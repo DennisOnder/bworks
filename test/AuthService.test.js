@@ -64,8 +64,8 @@ describe("Auth Service", () => {
     });
   });
   describe("Edit", () => {
-    it("should return the new user as an object", async () => {
-      const token = await getToken(testUser);
+    it("should return the edited user as an object", async () => {
+      const token = await getToken({ email: testUser.email, password: testUser.password });
       const response = await apiCaller(
         "put",
         config.AUTH_SERVER_PORT,
@@ -93,7 +93,7 @@ describe("Auth Service", () => {
   });
   describe("Current", () => {
     it("should return the data for the current user", async () => {
-      const token = await getToken(editedUser);
+      const token = await getToken({ email: editedUser.email, password: editedUser.password });
       const response = await apiCaller(
         "get",
         config.AUTH_SERVER_PORT,
@@ -119,7 +119,7 @@ describe("Auth Service", () => {
   });
   describe("Delete", () => {
     it("should return an object with a timestamp and the deleted key", async () => {
-      const token = await getToken(editedUser);
+      const token = await getToken({ email: editedUser.email, password: editedUser.password });
       const response = await apiCaller(
         "delete",
         config.AUTH_SERVER_PORT,

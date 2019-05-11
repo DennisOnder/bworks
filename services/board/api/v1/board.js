@@ -21,6 +21,7 @@ router.post(
         );
       } else {
         const newBoard = new Board({
+          owner: req.user.id,
           name: req.body.name
         });
         newBoard.save();

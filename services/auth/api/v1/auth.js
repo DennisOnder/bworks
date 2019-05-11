@@ -29,6 +29,7 @@ router.post("/register", async (req, res) => {
         return toolkit.handler(res, 403, "User already exists.");
       } else {
         newUser.save();
+        console.log(`${newUser.handle} registered.`);
         return toolkit.handler(res, 200, newUser);
       }
     }
@@ -74,17 +75,22 @@ router.put(
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     const user = await User.findById(req.user.id);
-    const inputErrors = await inputValidation.registration(req.body);
-    if (inputErrors) {
-      return toolkit.handler(res, 400, inputErrors);
-    } else {
-      (user.firstName = req.body.firstName),
+    if (user) {
+      const inputErrors = await inputValidation.registration(req.body);
+      if (inputErrors) {
+        return toolkit.handler(res, 400, inputErrors);
+      } else {
+        (user.firstName = req.body.firstName),
         (user.lastName = req.body.lastName),
         (user.email = req.body.email),
         (user.handle = await generateHandle(user.firstName, user.lastName)),
         (user.password = await bcrypt.hashSync(req.body.password, 10));
+      console.log(`${req.user.handle} edited. New handle: ${user.handle}`);
       user.save();
       return toolkit.handler(res, 200, user);
+      }
+    } else {
+      return toolkit.handler(res, 404, 'User not found.');
     }
   }
 );
@@ -94,7 +100,8 @@ router.delete(
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
     User.findByIdAndDelete(req.user.id)
-      .then(() => {
+      .then(user => {
+        console.log(`${user.handle} deleted.`);
         return toolkit.handler(res, 200, {
           deleted: true,
           timestamp: Date.now()
