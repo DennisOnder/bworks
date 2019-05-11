@@ -2,7 +2,7 @@
 const chai = require("chai");
 const config = require("../config/config");
 const apiCaller = require("./apiCaller");
-const getToken = require("./getToken");
+// const getToken = require("./getToken");
 
 // Testing account
 const testUser = {
@@ -63,43 +63,53 @@ describe("Auth Service", () => {
         .to.have.all.keys("success", "timestamp", "token");
     });
   });
-  describe("Edit", () => {
-    it("should return the edited user as an object", async () => {
-      const token = await getToken({ email: testUser.email, password: testUser.password });
-      const response = await apiCaller(
-        "put",
-        config.AUTH_SERVER_PORT,
-        "/auth/edit",
-        editedUser,
-        token
-      );
-      chai.expect(response.status).to.eq(200);
-      chai.expect(response.data).to.be.an("object");
-      chai
-        .expect(response.data)
-        .to.have.all.keys(
-          "_id",
-          "__v",
-          "type",
-          "firstName",
-          "lastName",
-          "email",
-          "handle",
-          "password",
-          "profilePicture",
-          "createdAt"
-        );
-    });
-  });
+  // describe("Edit", () => {
+  //   it("should return the edited user as an object", async () => {
+  //     const user = await apiCaller(
+  //       "post",
+  //       config.AUTH_SERVER_PORT,
+  //       "/auth/login",
+  //       testUser
+  //     );
+  //     const response = await apiCaller(
+  //       "put",
+  //       config.AUTH_SERVER_PORT,
+  //       "/auth/edit",
+  //       editedUser,
+  //       user.data.token
+  //     );
+  //     chai.expect(response.status).to.eq(200);
+  //     chai.expect(response.data).to.be.an("object");
+  //     chai
+  //       .expect(response.data)
+  //       .to.have.all.keys(
+  //         "_id",
+  //         "__v",
+  //         "type",
+  //         "firstName",
+  //         "lastName",
+  //         "email",
+  //         "handle",
+  //         "password",
+  //         "profilePicture",
+  //         "createdAt"
+  //       );
+  //   });
+  // });
   describe("Current", () => {
     it("should return the data for the current user", async () => {
-      const token = await getToken({ email: editedUser.email, password: editedUser.password });
+      const user = await apiCaller(
+        "post",
+        config.AUTH_SERVER_PORT,
+        "/auth/login",
+        testUser
+      );
       const response = await apiCaller(
         "get",
         config.AUTH_SERVER_PORT,
         "/auth/current",
         null,
-        token
+        user.data.token
       );
       chai.expect(response.status).to.eq(200);
       chai.expect(response.data).to.be.an("object");
@@ -119,13 +129,18 @@ describe("Auth Service", () => {
   });
   describe("Delete", () => {
     it("should return an object with a timestamp and the deleted key", async () => {
-      const token = await getToken({ email: editedUser.email, password: editedUser.password });
+      const user = await apiCaller(
+        "post",
+        config.AUTH_SERVER_PORT,
+        "/auth/login",
+        testUser
+      );
       const response = await apiCaller(
         "delete",
         config.AUTH_SERVER_PORT,
         "/auth/delete",
-        editedUser,
-        token
+        null,
+        user.data.token
       );
       chai.expect(response.status).to.eq(200);
       chai.expect(response.data).to.be.an("object");

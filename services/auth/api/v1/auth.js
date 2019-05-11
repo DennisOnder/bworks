@@ -24,7 +24,9 @@ router.post("/register", async (req, res) => {
         newUser.lastName
       );
       newUser.password = await bcrypt.hashSync(req.body.password, 10);
-      const user = await User.findOne({ email: newUser.email });
+      const user = await User.findOne({
+        email: newUser.email
+      });
       if (user) {
         return toolkit.handler(res, 403, "User already exists.");
       } else {
@@ -39,7 +41,9 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
-  const user = await User.findOne({ email: req.body.email });
+  const user = await User.findOne({
+    email: req.body.email
+  });
   if (user) {
     const match = await bcrypt.compareSync(req.body.password, user.password);
     if (match) {
@@ -51,8 +55,9 @@ router.post("/login", async (req, res) => {
       };
       jwt.sign(
         payload,
-        config.SECRET_OR_KEY,
-        { expiresIn: "24h" },
+        config.SECRET_OR_KEY, {
+          expiresIn: "24h"
+        },
         (err, token) => {
           if (err) return toolkit.handler(res, 403, err);
           return toolkit.handler(res, 200, {
@@ -72,9 +77,13 @@ router.post("/login", async (req, res) => {
 
 router.put(
   "/edit",
-  passport.authenticate("jwt", { session: false }),
+  passport.authenticate("jwt", {
+    session: false
+  }),
   async (req, res) => {
-    const user = await User.findById(req.user.id);
+    const user = await User.findOne({
+      _id: req.user.id
+    });
     if (user) {
       const inputErrors = await inputValidation.registration(req.body);
       if (inputErrors) {
@@ -85,9 +94,9 @@ router.put(
         (user.email = req.body.email),
         (user.handle = await generateHandle(user.firstName, user.lastName)),
         (user.password = await bcrypt.hashSync(req.body.password, 10));
-      console.log(`${req.user.handle} edited. New handle: ${user.handle}`);
-      user.save();
-      return toolkit.handler(res, 200, user);
+        console.log(`${req.user.handle} edited. New handle: ${user.handle}`);
+        user.save();
+        return toolkit.handler(res, 200, user);
       }
     } else {
       return toolkit.handler(res, 404, 'User not found.');
@@ -97,25 +106,30 @@ router.put(
 
 router.delete(
   "/delete",
-  passport.authenticate("jwt", { session: false }),
-  (req, res) => {
-    User.findByIdAndDelete(req.user.id)
-      .then(user => {
-        console.log(`${user.handle} deleted.`);
-        return toolkit.handler(res, 200, {
-          deleted: true,
-          timestamp: Date.now()
-        });
-      })
-      .catch(err => {
-        return toolkit.handler(res, 400, err);
+  passport.authenticate("jwt", {
+    session: false
+  }),
+  async (req, res) => {
+    const user = await User.findOne({
+      _id: req.user.id
+    });
+    if (user) {
+      console.log(`${user.handle} deleted.`);
+      user.remove();
+      return toolkit.handler(res, 200, {
+        deleted: true,
+        timestamp: Date.now()
       });
-  }
-);
+    } else {
+      return toolkit.handler(res, 404, 'User not found.');
+    }
+  });
 
 router.get(
   "/current",
-  passport.authenticate("jwt", { session: false }),
+  passport.authenticate("jwt", {
+    session: false
+  }),
   (req, res) => {
     const user = {
       id: req.user.id,

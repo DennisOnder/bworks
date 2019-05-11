@@ -1,17 +1,11 @@
 const app = require("express")();
-const bodyParser = require("body-parser");
 const config = require("../../config/config");
-const cors = require("cors");
 const database = require("../../config/database");
-const passport = require("passport");
 const routes = require(`./api/${config.API_VERSION}/board`);
+const applyMiddleware = require('../../config/applyMiddleware');
 
 // Apply middleware
-app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(passport.initialize());
-require("../../config/passport");
+applyMiddleware(app);
 
 // Database connection
 database.connect(config.BOARD_DB_URI);
