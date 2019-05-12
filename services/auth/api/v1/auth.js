@@ -55,16 +55,20 @@ router.post("/login", async (req, res) => {
       };
       jwt.sign(
         payload,
-        config.SECRET_OR_KEY, {
+        config.SECRET_OR_KEY,
+        {
           expiresIn: "24h"
         },
         (err, token) => {
-          if (err) return toolkit.handler(res, 403, err);
-          return toolkit.handler(res, 200, {
-            success: true,
-            timestamp: Date.now(),
-            token: `Bearer ${token}`
-          });
+          if (err) {
+            return toolkit.handler(res, 403, err);
+          } else {
+            return toolkit.handler(res, 200, {
+              success: true,
+              timestamp: Date.now(),
+              token: `Bearer ${token}`
+            });
+          }
         }
       );
     } else {
@@ -81,25 +85,23 @@ router.put(
     session: false
   }),
   async (req, res) => {
-    const user = await User.findOne({
-      _id: req.user.id
-    });
+    const user = await User.findById(req.user.id);
     if (user) {
       const inputErrors = await inputValidation.registration(req.body);
       if (inputErrors) {
         return toolkit.handler(res, 400, inputErrors);
       } else {
         (user.firstName = req.body.firstName),
-        (user.lastName = req.body.lastName),
-        (user.email = req.body.email),
-        (user.handle = await generateHandle(user.firstName, user.lastName)),
-        (user.password = await bcrypt.hashSync(req.body.password, 10));
+          (user.lastName = req.body.lastName),
+          (user.email = req.body.email),
+          (user.handle = await generateHandle(user.firstName, user.lastName)),
+          (user.password = await bcrypt.hashSync(req.body.password, 10));
         console.log(`${req.user.handle} edited. New handle: ${user.handle}`);
         user.save();
         return toolkit.handler(res, 200, user);
       }
     } else {
-      return toolkit.handler(res, 404, 'User not found.');
+      return toolkit.handler(res, 404, "User not found.");
     }
   }
 );
@@ -109,21 +111,23 @@ router.delete(
   passport.authenticate("jwt", {
     session: false
   }),
-  async (req, res) => {
-    const user = await User.findOne({
-      _id: req.user.id
-    });
-    if (user) {
-      console.log(`${user.handle} deleted.`);
-      user.remove();
-      return toolkit.handler(res, 200, {
-        deleted: true,
-        timestamp: Date.now()
-      });
-    } else {
-      return toolkit.handler(res, 404, 'User not found.');
-    }
-  });
+  (req, res) => {
+    User.findByIdAndDelete(req.user.id)
+      .then(user => {
+        if (user) {
+          console.log(`${user.handle} deleted.`);
+          user.remove();
+          return toolkit.handler(res, 200, {
+            deleted: true,
+            timestamp: Date.now()
+          });
+        } else {
+          return toolkit.handler(res, 404, "User not found.");
+        }
+      })
+      .catch(err => console.error(err));
+  }
+);
 
 router.get(
   "/current",

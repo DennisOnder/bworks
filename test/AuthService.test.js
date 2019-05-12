@@ -63,46 +63,46 @@ describe("Auth Service", () => {
         .to.have.all.keys("success", "timestamp", "token");
     });
   });
-  // describe("Edit", () => {
-  //   it("should return the edited user as an object", async () => {
-  //     const user = await apiCaller(
-  //       "post",
-  //       config.AUTH_SERVER_PORT,
-  //       "/auth/login",
-  //       testUser
-  //     );
-  //     const response = await apiCaller(
-  //       "put",
-  //       config.AUTH_SERVER_PORT,
-  //       "/auth/edit",
-  //       editedUser,
-  //       user.data.token
-  //     );
-  //     chai.expect(response.status).to.eq(200);
-  //     chai.expect(response.data).to.be.an("object");
-  //     chai
-  //       .expect(response.data)
-  //       .to.have.all.keys(
-  //         "_id",
-  //         "__v",
-  //         "type",
-  //         "firstName",
-  //         "lastName",
-  //         "email",
-  //         "handle",
-  //         "password",
-  //         "profilePicture",
-  //         "createdAt"
-  //       );
-  //   });
-  // });
+  describe("Edit", () => {
+    it("should return the edited user as an object", async () => {
+      const user = await apiCaller(
+        "post",
+        config.AUTH_SERVER_PORT,
+        "/auth/login",
+        testUser
+      );
+      const response = await apiCaller(
+        "put",
+        config.AUTH_SERVER_PORT,
+        "/auth/edit",
+        editedUser,
+        user.data.token
+      );
+      chai.expect(response.status).to.eq(200);
+      chai.expect(response.data).to.be.an("object");
+      chai
+        .expect(response.data)
+        .to.have.all.keys(
+          "_id",
+          "__v",
+          "type",
+          "firstName",
+          "lastName",
+          "email",
+          "handle",
+          "password",
+          "profilePicture",
+          "createdAt"
+        );
+    });
+  });
   describe("Current", () => {
     it("should return the data for the current user", async () => {
       const user = await apiCaller(
         "post",
         config.AUTH_SERVER_PORT,
         "/auth/login",
-        testUser
+        editedUser
       );
       const response = await apiCaller(
         "get",
@@ -133,7 +133,7 @@ describe("Auth Service", () => {
         "post",
         config.AUTH_SERVER_PORT,
         "/auth/login",
-        testUser
+        editedUser
       );
       const response = await apiCaller(
         "delete",
