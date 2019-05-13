@@ -8,6 +8,16 @@ const jwt = require("jsonwebtoken");
 const config = require("../../../../config/config");
 const passport = require("passport");
 
+router.get(
+  "/test",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    const user = await User.findById(req.user.id);
+    console.log(user);
+    res.json(user);
+  }
+);
+
 router.post("/register", async (req, res) => {
   try {
     const inputErrors = await inputValidation.registration(req.body);
