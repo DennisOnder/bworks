@@ -4,15 +4,6 @@ const Board = require("../../../../models/Board");
 const toolkit = require("../../../../utils/toolkit");
 const inputValidation = require("../../../../utils/inputValidation");
 
-router.get(
-  "/test",
-  passport.authenticate("jwt", { session: false }),
-  (req, res) => {
-    console.log(req.user.id);
-    res.json(req.user.id);
-  }
-);
-
 router.post(
   "/create",
   passport.authenticate("jwt", { session: false }),
