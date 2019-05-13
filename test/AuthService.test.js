@@ -1,14 +1,13 @@
 /* eslint-disable no-undef */
 const chai = require("chai");
-const config = require("../config/config");
 const apiCaller = require("./apiCaller");
-// const getToken = require("./getToken");
+const getToken = require("./getToken");
 
 // Testing account
 const testUser = {
   firstName: "Test",
   lastName: "User",
-  email: "test@mail.com",
+  email: `test${Math.floor(Math.random() * 10)}@account.com`,
   password: "test1234",
   confirmPassword: "test1234"
 };
@@ -17,7 +16,7 @@ const testUser = {
 const editedUser = {
   firstName: "New",
   lastName: "Test",
-  email: "new@test.com",
+  email: "new@edited.com",
   password: "new_test_user",
   confirmPassword: "new_test_user"
 };
@@ -25,12 +24,7 @@ const editedUser = {
 describe("Auth Service", () => {
   describe("Registration", () => {
     it("should return the user object", async () => {
-      const response = await apiCaller(
-        "post",
-        config.AUTH_SERVER_PORT,
-        "/auth/register",
-        testUser
-      );
+      const response = await apiCaller("post", "/auth/register", testUser);
       chai.expect(response.status).to.eq(200);
       chai.expect(response.data).to.be.an("object");
       chai
@@ -50,12 +44,7 @@ describe("Auth Service", () => {
   });
   describe("Login", () => {
     it("should return a token with the success and timestamp keys", async () => {
-      const response = await apiCaller(
-        "post",
-        config.AUTH_SERVER_PORT,
-        "/auth/login",
-        testUser
-      );
+      const response = await apiCaller("post", "/auth/login", testUser);
       chai.expect(response.status).to.eq(200);
       chai.expect(response.data).to.be.an("object");
       chai
@@ -65,19 +54,8 @@ describe("Auth Service", () => {
   });
   describe("Edit", () => {
     it("should return the edited user as an object", async () => {
-      const user = await apiCaller(
-        "post",
-        config.AUTH_SERVER_PORT,
-        "/auth/login",
-        testUser
-      );
-      const response = await apiCaller(
-        "put",
-        config.AUTH_SERVER_PORT,
-        "/auth/edit",
-        editedUser,
-        user.data.token
-      );
+      const token = await getToken(testUser);
+      const response = await apiCaller("put", "/auth/edit", editedUser, token);
       chai.expect(response.status).to.eq(200);
       chai.expect(response.data).to.be.an("object");
       chai
@@ -98,19 +76,8 @@ describe("Auth Service", () => {
   });
   describe("Current", () => {
     it("should return the data for the current user", async () => {
-      const user = await apiCaller(
-        "post",
-        config.AUTH_SERVER_PORT,
-        "/auth/login",
-        editedUser
-      );
-      const response = await apiCaller(
-        "get",
-        config.AUTH_SERVER_PORT,
-        "/auth/current",
-        null,
-        user.data.token
-      );
+      const token = await getToken(editedUser);
+      const response = await apiCaller("get", "/auth/current", null, token);
       chai.expect(response.status).to.eq(200);
       chai.expect(response.data).to.be.an("object");
       chai
@@ -129,19 +96,8 @@ describe("Auth Service", () => {
   });
   describe("Delete", () => {
     it("should return an object with a timestamp and the deleted key", async () => {
-      const user = await apiCaller(
-        "post",
-        config.AUTH_SERVER_PORT,
-        "/auth/login",
-        editedUser
-      );
-      const response = await apiCaller(
-        "delete",
-        config.AUTH_SERVER_PORT,
-        "/auth/delete",
-        null,
-        user.data.token
-      );
+      const token = await getToken(editedUser);
+      const response = await apiCaller("delete", "/auth/delete", null, token);
       chai.expect(response.status).to.eq(200);
       chai.expect(response.data).to.be.an("object");
       chai.expect(response.data).to.have.all.keys("deleted", "timestamp");
