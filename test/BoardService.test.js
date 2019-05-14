@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 const chai = require("chai");
-const apiCaller = require("./apiCaller");
-const getToken = require("./getToken");
+const apiCaller = require("../utils/apiCaller");
+const getToken = require("../utils/getToken");
 
 // Testing account
 const testUser = {
