@@ -2,7 +2,7 @@ const router = require("express").Router();
 const Board = require("../../../../models/Board");
 const toolkit = require("../../../../utils/toolkit");
 const inputValidation = require("../../../../utils/inputValidation");
-const verifyUser = require("../../../../utils/verifyUser");
+const verifyUser = require("../../../../middleware/verifyUser");
 
 router.post("/create", verifyUser, async (req, res) => {
   try {

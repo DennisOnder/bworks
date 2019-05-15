@@ -2,10 +2,12 @@ const app = require("express")();
 const config = require("../../config/config");
 const database = require("../../config/database");
 const routes = require(`./api/${config.API_VERSION}/auth`);
-const applyMiddleware = require('../../config/applyMiddleware');
+const applyMiddleware = require("../../middleware/applyMiddleware");
+const passportMiddleware = require("../../middleware/passportMiddleware");
 
 // Apply middleware
 applyMiddleware(app);
+passportMiddleware.apply(app);
 
 // Database connection
 database.connect(config.AUTH_DB_URI);
