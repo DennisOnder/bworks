@@ -11,7 +11,7 @@ const testUser = {
 
 // Testing board
 const testBoard = {
-  name: "TestBoard"
+  name: `TestBoard${Math.floor(Math.random() * 1000)}`
 };
 
 // Edited account
@@ -29,7 +29,10 @@ describe("Board Service", () => {
         testBoard,
         token
       );
-      chai.expect(response.data).to.eq(200);
+      chai.expect(response.status).to.eq(200);
+      chai
+        .expect(response.data)
+        .to.have.all.keys("_id", "__v", "owner", "name", "lists", "createdAt");
     });
   });
   describe("Get", () => {

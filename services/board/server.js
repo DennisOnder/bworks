@@ -2,7 +2,7 @@ const app = require("express")();
 const config = require("../../config/config");
 const database = require("../../config/database");
 const routes = require(`./api/${config.API_VERSION}/board`);
-const applyMiddleware = require('../../config/applyMiddleware');
+const applyMiddleware = require("../../config/applyMiddleware");
 
 // Apply middleware
 applyMiddleware(app);

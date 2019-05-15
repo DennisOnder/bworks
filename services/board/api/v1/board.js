@@ -1,38 +1,38 @@
 const router = require("express").Router();
-const passport = require("passport");
 const Board = require("../../../../models/Board");
 const toolkit = require("../../../../utils/toolkit");
 const inputValidation = require("../../../../utils/inputValidation");
+const verifyUser = require("../../../../utils/verifyUser");
 
-router.post(
-  "/create",
-  passport.authenticate("jwt", { session: false }),
-  async (req, res) => {
-    try {
-      const inputErrors = await inputValidation.board(req.body);
-      if (inputErrors) {
-        return toolkit.handler(res, 400, inputErrors);
+router.post("/create", verifyUser, async (req, res) => {
+  try {
+    const newBoard = new Board({
+      owner: req.user.id,
+      name: req.body.name
+    });
+    const boardExists = await Board.findOne({
+      name: newBoard.name,
+      owner: newBoard.owner
+    });
+    const inputErrors = await inputValidation.board(newBoard);
+    if (!boardExists) {
+      if (!inputErrors) {
+        await newBoard.save();
+        console.log(`Board ${newBoard._id} created.`);
+        return toolkit.handler(res, 200, newBoard);
       } else {
-        const boardExists = await Board.findOne({ name: req.body.name });
-        if (boardExists) {
-          return toolkit.handler(
-            res,
-            403,
-            "A board with this name already exists."
-          );
-        } else {
-          const newBoard = new Board({
-            owner: req.user.id,
-            name: req.body.name
-          });
-          newBoard.save();
-          return toolkit.handler(res, 200, newBoard);
-        }
+        return toolkit.handler(res, 400, inputErrors);
       }
-    } catch (error) {
-      console.error(error);
+    } else {
+      return toolkit.handler(
+        res,
+        403,
+        `You already have a board named ${newBoard.name}.`
+      );
     }
+  } catch (error) {
+    console.error(error);
   }
-);
+});
 
 module.exports = router;
