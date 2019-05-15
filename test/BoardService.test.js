@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-const chai = require("chai");
+const { expect } = require("chai");
 const apiCaller = require("../utils/apiCaller");
 const getToken = require("../utils/getToken");
 
@@ -13,13 +13,15 @@ const testUser = {
 };
 
 // Testing board
-const testBoard = {
-  name: `TestBoard${Math.floor(Math.random() * 1000)}`
+let testBoard = {
+  name: `TestBoard${Math.floor(Math.random() * 1000)}`,
+  id: ""
 };
 
 // Edited account
-const editedTestBoard = {
-  name: "EditedTestBoard"
+let editedTestBoard = {
+  name: "EditedTestBoard",
+  id: ""
 };
 
 // User token
@@ -38,10 +40,16 @@ describe("Board Service", () => {
         testBoard,
         token
       );
-      chai.expect(response.status).to.eq(200);
-      chai
-        .expect(response.data)
-        .to.have.all.keys("_id", "__v", "owner", "name", "lists", "createdAt");
+      expect(response.status).to.eq(200);
+      expect(response.data).to.have.all.keys(
+        "_id",
+        "__v",
+        "owner",
+        "name",
+        "lists",
+        "createdAt"
+      );
+      testBoard.id = response.data._id;
     });
   });
   describe("Get single board", () => {
@@ -52,25 +60,54 @@ describe("Board Service", () => {
         null,
         token
       );
-      chai.expect(response.status).to.eq(200);
-      chai
-        .expect(response.data)
-        .to.have.all.keys("_id", "__v", "owner", "name", "lists", "createdAt");
+      expect(response.status).to.eq(200);
+      expect(response.data).to.have.all.keys(
+        "_id",
+        "__v",
+        "owner",
+        "name",
+        "lists",
+        "createdAt"
+      );
     });
   });
   describe("Get all user boards", () => {
     it("should return the boards as an array", async () => {
       const response = await apiCaller("get", "/board/get/all", null, token);
-      chai.expect(response.status).to.eq(200);
-      chai.expect(response.data).to.be.an("array");
+      expect(response.status).to.eq(200);
+      expect(response.data).to.be.an("array");
     });
   });
-  describe("Update board name", () => {
+  describe("Update board", () => {
     it("should return the updated board as an object", async () => {
+      const response = await apiCaller(
+        "put",
+        `/board/edit/${testBoard.id}`,
+        null,
+        token
+      );
+      expect(response.status).to.eq(200);
+      expect(response.data).to.have.all.keys(
+        "_id",
+        "__v",
+        "owner",
+        "name",
+        "lists",
+        "createdAt"
+      );
+    });
+  });
+  describe("Create list", () => {
+    it("should return the new list as an object", async () => {
       //
     });
   });
-  describe("Update list name", () => {
+  describe("Create task", () => {
+    it("should return the new task as an object", async () => {
+      //
+    });
+  });
+  describe("Update list", () => {
     it("should return the updated list as an array", async () => {
       //
     });
