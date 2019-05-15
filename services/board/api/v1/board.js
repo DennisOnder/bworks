@@ -35,4 +35,19 @@ router.post("/create", verifyUser, async (req, res) => {
   }
 });
 
+router.get("/get/single/:boardId", verifyUser, async (req, res) => {
+  const board = await Board.findOne({
+    owner: req.user.id,
+    _id: req.params.boardId
+  });
+  board
+    ? toolkit.handler(res, 200, board)
+    : toolkit.handler(res, 404, "Board not found.");
+});
+
+router.get("/get/all", verifyUser, async (req, res) => {
+  const boards = await Board.find({ owner: req.user.id });
+  return toolkit.handler(res, 200, boards);
+});
+
 module.exports = router;
