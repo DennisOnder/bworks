@@ -2,9 +2,8 @@ const router = require("express").Router();
 const Board = require("../../../../models/Board");
 const toolkit = require("../../../../utils/toolkit");
 const inputValidation = require("../../../../utils/inputValidation");
-const verifyUser = require("../../../../middleware/verifyUser");
 
-router.post("/create", verifyUser, async (req, res) => {
+router.post("/create", async (req, res) => {
   try {
     const newBoard = new Board({
       owner: req.user.id,
@@ -35,7 +34,7 @@ router.post("/create", verifyUser, async (req, res) => {
   }
 });
 
-router.get("/get/single/:boardId", verifyUser, async (req, res) => {
+router.get("/get/single/:boardId", async (req, res) => {
   const board = await Board.findOne({
     owner: req.user.id,
     _id: req.params.boardId
@@ -45,7 +44,7 @@ router.get("/get/single/:boardId", verifyUser, async (req, res) => {
     : toolkit.handler(res, 404, "Board not found.");
 });
 
-router.get("/get/all", verifyUser, async (req, res) => {
+router.get("/get/all", async (req, res) => {
   const boards = await Board.find({ owner: req.user.id });
   return toolkit.handler(res, 200, boards);
 });

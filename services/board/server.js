@@ -3,9 +3,11 @@ const config = require("../../config/config");
 const database = require("../../config/database");
 const routes = require(`./api/${config.API_VERSION}/board`);
 const applyMiddleware = require("../../middleware/applyMiddleware");
+const verifyUser = require("../../middleware/verifyUser");
 
 // Apply middleware
 applyMiddleware(app);
+app.all("*", verifyUser);
 
 // Database connection
 database.connect(config.BOARD_DB_URI);
