@@ -9,8 +9,7 @@ const testUser = {
   lastName: "User",
   email: `test${Math.floor(Math.random() * 10)}@account.com`,
   password: "test1234",
-  confirmPassword: "test1234",
-  id: "5cd99f48454aa1341f747f80"
+  confirmPassword: "test1234"
 };
 
 // Edited account
