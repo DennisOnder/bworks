@@ -18,12 +18,6 @@ let testBoard = {
   id: ""
 };
 
-// Edited account
-let editedTestBoard = {
-  name: "EditedTestBoard",
-  id: ""
-};
-
 // User token
 let token;
 
@@ -73,28 +67,12 @@ describe("Board Service", () => {
   });
   describe("Get all user boards", () => {
     it("should return the boards as an array", async () => {
-      const response = await apiCaller("get", "/board/get/all", null, token);
-      expect(response.status).to.eq(200);
-      expect(response.data).to.be.an("array");
+      //
     });
   });
   describe("Update board", () => {
     it("should return the updated board as an object", async () => {
-      const response = await apiCaller(
-        "put",
-        `/board/edit/${testBoard.id}`,
-        null,
-        token
-      );
-      expect(response.status).to.eq(200);
-      expect(response.data).to.have.all.keys(
-        "_id",
-        "__v",
-        "owner",
-        "name",
-        "lists",
-        "createdAt"
-      );
+      //
     });
   });
   describe("Create list", () => {

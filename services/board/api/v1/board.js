@@ -5,36 +5,36 @@ const inputValidation = require("../../../../utils/inputValidation");
 
 router.post("/create", async (req, res) => {
   try {
-    const newBoard = new Board({
-      owner: req.user.id,
-      name: req.body.name
-    });
-    const boardExists = await Board.findOne({
-      name: newBoard.name,
-      owner: newBoard.owner
-    });
-    const inputErrors = await inputValidation.board(newBoard);
-    if (!boardExists) {
-      if (!inputErrors) {
+    const inputErrors = await inputValidation.board(req.body);
+    if (inputErrors) {
+      return toolkit.handler(req, 400, inputErrors);
+    } else {
+      const boardExists = await Board.findOne({
+        name: req.body.name,
+        owner: req.user.id
+      });
+      if (boardExists) {
+        return toolkit.handler(
+          res,
+          403,
+          `You already have a board named ${req.body.name}.`
+        );
+      } else {
+        const newBoard = new Board({
+          owner: req.user.id,
+          name: req.body.name
+        });
         await newBoard.save();
         console.log(`Board ${newBoard._id} created.`);
         return toolkit.handler(res, 200, newBoard);
-      } else {
-        return toolkit.handler(res, 400, inputErrors);
       }
-    } else {
-      return toolkit.handler(
-        res,
-        403,
-        `You already have a board named ${newBoard.name}.`
-      );
     }
   } catch (error) {
     console.error(error);
   }
 });
 
-router.get("/get/single/:boardId", async (req, res) => {
+router.get("/get/id/:boardId", async (req, res) => {
   const board = await Board.findOne({
     owner: req.user.id,
     _id: req.params.boardId
