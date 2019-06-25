@@ -1,22 +1,26 @@
 const app = require("express")();
-const config = require("../../config/config");
 const database = require("../../config/database");
-const routes = require(`./api/${config.API_VERSION}/board`);
 const applyMiddleware = require("../../middleware/applyMiddleware");
 const verifyUser = require("../../middleware/verifyUser");
+const {
+  BOARD_DB_URI,
+  BOARD_SERVER_PORT,
+  API_VERSION
+} = require("../../config/config");
 
 // Apply middleware
 applyMiddleware(app);
 app.all("*", verifyUser);
 
 // Database connection
-database.connect(config.BOARD_DB_URI);
+database.connect(BOARD_DB_URI);
 
-// Router init
+// Router
+const routes = require(`./api/${API_VERSION}/board`);
 app.use("/board", routes);
 
-// Server init
-app.listen(config.BOARD_SERVER_PORT, err => {
+// Server
+app.listen(BOARD_SERVER_PORT, err => {
   if (err) process.exit(1);
-  console.log(`Board service running on port: ${config.BOARD_SERVER_PORT}`);
+  console.log(`Board service running on port: ${BOARD_SERVER_PORT}`);
 });

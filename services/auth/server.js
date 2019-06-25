@@ -1,22 +1,26 @@
 const app = require("express")();
-const config = require("../../config/config");
 const database = require("../../config/database");
-const routes = require(`./api/${config.API_VERSION}/auth`);
 const applyMiddleware = require("../../middleware/applyMiddleware");
 const passportMiddleware = require("../../middleware/passportMiddleware");
+const {
+  AUTH_DB_URI,
+  AUTH_SERVER_PORT,
+  API_VERSION
+} = require("../../config/config");
 
 // Apply middleware
 applyMiddleware(app);
 passportMiddleware.apply(app);
 
 // Database connection
-database.connect(config.AUTH_DB_URI);
+database.connect(AUTH_DB_URI);
 
-// Router init
+// Router
+const routes = require(`./api/${API_VERSION}/auth`);
 app.use("/auth", routes);
 
-// Server init
-app.listen(config.AUTH_SERVER_PORT, err => {
+// Server
+app.listen(AUTH_SERVER_PORT, err => {
   if (err) process.exit(1);
-  console.log(`Auth service running on port: ${config.AUTH_SERVER_PORT}`);
+  console.log(`Auth service running on port: ${AUTH_SERVER_PORT}`);
 });
