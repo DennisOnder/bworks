@@ -49,5 +49,16 @@ module.exports = {
     } else {
       return false;
     }
+  },
+  list: data => {
+    let error = {};
+    if (validator.isEmpty(data.listName)) {
+      error.listNameEmpty = "List name cannot be empty.";
+    }
+    if (Object.keys(error).length > 0) {
+      return error;
+    } else {
+      return false;
+    }
   }
 };

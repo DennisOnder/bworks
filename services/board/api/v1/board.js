@@ -49,4 +49,42 @@ router.get("/get/all", async (req, res) => {
   return toolkit.handler(res, 200, boards);
 });
 
+router.post("/list/create/:boardId", async (req, res) => {
+  const inputErrors = await inputValidation.list(req.body);
+  const board = await Board.findOne({
+    owner: req.user.id,
+    _id: req.params.boardId
+  });
+  if (inputErrors) return toolkit.handler(res, 400, inputErrors);
+  if (board) {
+    board.lists.push({ listName: req.body.listName });
+    await board.save();
+    return toolkit.handler(res, 200, board.lists);
+  } else {
+    return toolkit.handler(res, 404, "Board not found.");
+  }
+});
+
+router.post("/task/create/:boardId/:listId", async (req, res) => {
+  const board = await Board.findOne({
+    owner: req.user.id,
+    _id: req.params.boardId
+  });
+  if (board) {
+    if (board.lists.length > 0) {
+      for (let i = 0; i < board.lists.length; i++) {
+        if (board.lists[i].id === req.params.listId) {
+          board.lists[i].tasks.push({ taskBody: req.body.taskBody });
+          await board.save();
+          return toolkit.handler(res, 200, board.lists[i]);
+        }
+      }
+    } else {
+      return toolkit.handler(res, 400, "Board has no lists.");
+    }
+  } else {
+    return toolkit.handler(res, 404, "Board not found.");
+  }
+});
+
 module.exports = router;
