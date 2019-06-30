@@ -65,7 +65,7 @@ router.post("/list/create/:boardId", async (req, res) => {
   }
 });
 
-router.delete("/list/delete/:boardId", async (req, res) => {
+router.delete("/list/delete/:boardId/:listId", async (req, res) => {
   const board = await Board.findOne({
     owner: req.user.id,
     _id: req.params.boardId
@@ -73,7 +73,12 @@ router.delete("/list/delete/:boardId", async (req, res) => {
   if (board) {
     if (board.lists.length > 0) {
       for (let i = 0; i < board.lists.length; i++) {
-        if (board.lists[i].id === req.params.boardId) {
+        if (
+          i === board.lists.length - 1 &&
+          board.lists[i].id !== req.params.listId
+        )
+          return toolkit.handler(res, 404, "No list found.");
+        if (board.lists[i].id === req.params.listId) {
           board.lists.splice(i, 1);
           await board.save();
           return toolkit.handler(res, 200, board.lists);
@@ -104,6 +109,55 @@ router.post("/task/create/:boardId/:listId", async (req, res) => {
     } else {
       return toolkit.handler(res, 400, "Board has no lists.");
     }
+  } else {
+    return toolkit.handler(res, 404, "Board not found.");
+  }
+});
+
+router.delete("/task/delete/:boardId/:listId/:taskId", async (req, res) => {
+  const board = await Board.findOne({
+    owner: req.user.id,
+    _id: req.params.boardId
+  });
+  if (board) {
+    if (board.lists.length > 0) {
+      for (let i = 0; i < board.lists.length; i++) {
+        if (
+          i === board.lists.length - 1 &&
+          board.lists[i].id !== req.params.listId
+        )
+          return toolkit.handler(res, 404, "No list found.");
+        if (board.lists[i].id === req.params.listId) {
+          for (let j = 0; j < board.lists[i].tasks.length; j++) {
+            if (
+              j === board.lists[i].tasks.length - 1 &&
+              board.lists[i].tasks[j].id !== req.params.taskId
+            )
+              return toolkit.handler(res, 404, "Task not found.");
+            if (board.lists[i].tasks[j].id === req.params.taskId) {
+              board.lists[i].tasks.splice(j, 1);
+              await board.save();
+              return toolkit.handler(res, 200, board.lists[i]);
+            }
+          }
+        }
+      }
+    } else {
+      return toolkit.handler(res, 400, "Board has no lists.");
+    }
+  } else {
+    return toolkit.handler(res, 404, "Board not found.");
+  }
+});
+
+router.delete("/delete/:boardId", async (req, res) => {
+  const board = await Board.findOne({
+    owner: req.user.id,
+    _id: req.params.boardId
+  });
+  if (board) {
+    await board.remove();
+    return toolkit.handler(res, 200, { deleted: true, timestamp: Date.now() });
   } else {
     return toolkit.handler(res, 404, "Board not found.");
   }
