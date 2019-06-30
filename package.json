@@ -6,8 +6,7 @@
   "scripts": {
     "run:auth": "nodemon ./services/auth/server.js",
     "run:board": "nodemon ./services/board/server.js",
-    "run:web": "nodemon ./services/web/server.js",
-    "start": "concurrently \"npm run run:auth\" \"npm run run:board\" \"npm run run:web\"",
+    "start": "concurrently \"npm run run:auth\" \"npm run run:board\"",
     "test": "mocha"
   },
   "repository": {
