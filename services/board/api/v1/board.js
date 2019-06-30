@@ -65,6 +65,28 @@ router.post("/list/create/:boardId", async (req, res) => {
   }
 });
 
+router.delete("/list/delete/:boardId", async (req, res) => {
+  const board = await Board.findOne({
+    owner: req.user.id,
+    _id: req.params.boardId
+  });
+  if (board) {
+    if (board.lists.length > 0) {
+      for (let i = 0; i < board.lists.length; i++) {
+        if (board.lists[i].id === req.params.boardId) {
+          board.lists.splice(i, 1);
+          await board.save();
+          return toolkit.handler(res, 200, board.lists);
+        }
+      }
+    } else {
+      return toolkit.handler(res, 400, "Board has no lists.");
+    }
+  } else {
+    return toolkit.handler(res, 404, "Board not found.");
+  }
+});
+
 router.post("/task/create/:boardId/:listId", async (req, res) => {
   const board = await Board.findOne({
     owner: req.user.id,
