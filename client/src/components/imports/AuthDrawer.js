@@ -28,7 +28,9 @@ export default class AuthDrawer extends React.Component {
     return (
       <div
         className="auth__drawer"
-        id="auth__drawer"
+        id={`auth__drawer__${
+          this.props.type === "login" ? "login" : "register"
+        }`}
         style={
           this.props.type === "login"
             ? { position: "fixed", right: "0" }
