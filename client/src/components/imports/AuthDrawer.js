@@ -1,17 +1,13 @@
 import React from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { loginUser, registerUser } from "../../actions/authActions";
 
-export default class AuthDrawer extends React.Component {
+class AuthDrawer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
   }
-  handleLogin = () => {
-    const data = {
-      email: this.state.email,
-      password: this.state.password
-    };
-    console.log(data);
-  };
   handleRegister = () => {
     const data = {
       firstName: this.state.firstName,
@@ -21,9 +17,16 @@ export default class AuthDrawer extends React.Component {
       confirmPassword: this.state.confirmPassword,
       password: this.state.password
     };
-    console.log(data);
+    this.props.registerUser(data);
   };
   onChange = e => this.setState({ [e.target.name]: e.target.value });
+  handleLogin = () => {
+    const data = {
+      email: this.state.email,
+      password: this.state.password
+    };
+    this.props.loginUser(data);
+  };
   render() {
     return (
       <div
@@ -120,3 +123,17 @@ export default class AuthDrawer extends React.Component {
     );
   }
 }
+
+AuthDrawer.propTypes = {
+  loginUser: PropTypes.func.isRequired
+};
+
+const mapStateToProps = state => ({
+  auth: state.auth,
+  errors: state.errors
+});
+
+export default connect(
+  mapStateToProps,
+  { loginUser, registerUser }
+)(AuthDrawer);
