@@ -1,11 +1,7 @@
 import axios from "axios";
 import jwt_decode from "jwt-decode";
-import { GET_ERRORS, SET_CURRENT_USER } from "./types";
-
-const dispatchErrors = error => ({
-  type: GET_ERRORS,
-  payload: error.response.data
-});
+import dispatchErrors from "./dispatchErrors";
+import { SET_CURRENT_USER } from "./types";
 
 export const loginUser = data => async dispatch => {
   try {
