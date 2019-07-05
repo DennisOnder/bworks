@@ -52,7 +52,7 @@ class AuthDrawer extends React.Component {
               />
               <input
                 onChange={this.onChange}
-                type="text"
+                type="password"
                 className="auth__drawer__wrapper__input"
                 name="password"
                 placeholder="Password:"
@@ -98,14 +98,14 @@ class AuthDrawer extends React.Component {
               />
               <input
                 onChange={this.onChange}
-                type="text"
+                type="password"
                 className="auth__drawer__wrapper__input"
                 name="password"
                 placeholder="Password:"
               />
               <input
                 onChange={this.onChange}
-                type="text"
+                type="password"
                 className="auth__drawer__wrapper__input"
                 name="confirmPassword"
                 placeholder="Confirm Password:"
@@ -130,7 +130,7 @@ AuthDrawer.propTypes = {
 
 const mapStateToProps = state => ({
   auth: state.auth,
-  errors: state.errors
+  errors: state.error
 });
 
 export default connect(

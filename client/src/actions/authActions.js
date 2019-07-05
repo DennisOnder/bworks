@@ -8,7 +8,7 @@ export const loginUser = data => async dispatch => {
     const res = await axios.post("http://localhost:8001/auth/login", data);
     const { token } = res.data;
     localStorage.setItem("token", token);
-    dispatch(setCurrentUser(token));
+    window.location.href = "/dashboard";
   } catch (error) {
     dispatch(dispatchErrors(error));
   }

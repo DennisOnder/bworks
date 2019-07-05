@@ -1,19 +1,19 @@
 import { GET_BOARDS, SET_BOARD } from "../actions/types";
 
 const initialState = {
-  boards: [],
-  currentBoard: {}
+  all: [],
+  current: {}
 };
 
 export default function(state = initialState, action) {
   switch (action.type) {
     case GET_BOARDS:
       return {
-        boards: action.payload
+        all: action.payload
       };
     case SET_BOARD:
       return {
-        currentBoard: action.payload
+        current: action.payload
       };
     default:
       return state;
